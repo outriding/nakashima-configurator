@@ -1,16 +1,23 @@
 "use client";
 
 import * as THREE from "three";
-import { Canvas, useThree, type ThreeElements } from "@react-three/fiber";
+import {
+  Canvas,
+  useThree,
+  type ThreeElements,
+  useFrame,
+} from "@react-three/fiber";
 import {
   OrbitControls,
   Environment,
   useGLTF,
   ContactShadows,
+  Center,
 } from "@react-three/drei";
 import { KTX2Loader } from "three-stdlib";
 import { type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Suspense } from "react";
+import { useSelectedWood, useSelectedFabric } from "@/lib/configuratorStore";
 
 const ktx2Loader = new KTX2Loader().setTranscoderPath("/basis/");
 
@@ -37,6 +44,14 @@ function Chair(props: ThreeElements["group"]) {
       loader.setKTX2Loader(ktx2Loader.detectSupport(gl));
     },
   ) as unknown as ChairGLTF;
+
+  const wood = useSelectedWood();
+  const fabric = useSelectedFabric();
+
+  useFrame(() => {
+    if (wood.hex) materials.frame.color.set(wood.hex);
+    if (fabric.hex) materials.cusion.color.set(fabric.hex);
+  });
 
   return (
     <group {...props} dispose={null}>
@@ -65,12 +80,12 @@ function Chair(props: ThreeElements["group"]) {
 function Shadows() {
   return (
     <ContactShadows
-      position={[0, 0, 0]}
-      opacity={0.7}
-      scale={12}
-      blur={2.2}
-      far={1.5}
-      resolution={1024}
+      position={[0, 0.005, 0]}
+      opacity={0.65}
+      scale={8}
+      blur={1.6}
+      far={0.6}
+      resolution={2048}
       frames={1}
     />
   );
@@ -78,12 +93,14 @@ function Shadows() {
 
 export default function Experience() {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [2.5, 1.8, 3], fov: 50 }}>
-      <color args={["ivory"]} attach="background" />
+    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 40 }}>
+      <color args={["ghostwhite"]} attach="background" />
       <Suspense fallback={null}>
-        <Environment preset="city" />
-        <Chair />
-        <Shadows />
+        <Environment preset="studio" />
+        <Center>
+          <Chair />
+          <Shadows />
+        </Center>
       </Suspense>
       <OrbitControls makeDefault />
     </Canvas>
