@@ -1,0 +1,75 @@
+export type OptionValue = {
+  id: string;
+  label: string;
+  price: number;
+  map?: string;
+  hex?: string;
+};
+
+export const woods = {
+  walnut: {
+    id: "walnut",
+    label: "Walnut",
+    price: 0,
+    map: "/textures/wood/walnut.jpg",
+    hex: "#353934",
+  },
+  oak: {
+    id: "oak",
+    label: "Oak",
+    price: 80,
+    map: "/textures/wood/oak.jpg",
+    hex: "#c19a6b",
+  },
+  ebony: {
+    id: "ebony",
+    label: "Ebony",
+    price: 120,
+    map: "/textures/wood/ebony.jpg",
+    hex: "#2b2b2b",
+  },
+} as const satisfies Record<string, OptionValue>;
+
+export const fabrics = {
+  linen: {
+    id: "linen",
+    label: "Linen",
+    price: 0,
+    map: "/textures/fabric/linen.jpg",
+    hex: "#726DE8",
+  },
+  velvet: {
+    id: "velvet",
+    label: "Velvet",
+    price: 150,
+    map: "/textures/fabric/velvet.jpg",
+    hex: "#c19a6b",
+  },
+  leather: {
+    id: "leather",
+    label: "Leather",
+    price: 300,
+    map: "/textures/fabric/leather.jpg",
+    hex: "#c19a6b",
+  },
+} as const satisfies Record<string, OptionValue>;
+
+export const chairConfig = {
+  basePrice: 1200,
+  woods,
+  fabrics,
+} as const;
+
+export type WoodKey = keyof typeof woods;
+export type FabricKey = keyof typeof fabrics;
+
+export const valuesById: Record<string, OptionValue> = {
+  ...woods,
+  ...fabrics,
+};
+
+export const woodFabricRules: Record<WoodKey, FabricKey[]> = {
+  walnut: ["linen", "velvet", "leather"],
+  oak: ["linen", "velvet"],
+  ebony: ["leather"],
+};
