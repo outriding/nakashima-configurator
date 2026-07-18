@@ -73,3 +73,9 @@ export const woodFabricRules: Record<WoodKey, FabricKey[]> = {
   oak: ["linen", "velvet"],
   ebony: ["leather"],
 };
+
+/** Which woods permit a given fabric — derived from woodFabricRules, so it can't drift. */
+export const woodsAllowingFabric = (fabricId: FabricKey): string[] =>
+  (Object.keys(woodFabricRules) as WoodKey[])
+    .filter((woodId) => woodFabricRules[woodId].includes(fabricId))
+    .map((woodId) => woods[woodId].label);
