@@ -34,16 +34,13 @@ type ChairGLTF = GLTF & {
   };
 };
 
+const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
+
 function Chair(props: ThreeElements["group"]) {
   const { gl } = useThree();
-  const { nodes, materials } = useGLTF(
-    "/chair_optimized.glb",
-    true,
-    false,
-    (loader) => {
-      loader.setKTX2Loader(ktx2Loader.detectSupport(gl));
-    },
-  ) as unknown as ChairGLTF;
+  const { nodes, materials } = useGLTF(MODEL_URL, true, false, (loader) => {
+    loader.setKTX2Loader(ktx2Loader.detectSupport(gl));
+  }) as unknown as ChairGLTF;
 
   const wood = useSelectedWood();
   const fabric = useSelectedFabric();

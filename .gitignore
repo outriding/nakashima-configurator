@@ -41,5 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # models
-public/chair_optimized.glb
+*.glb
 app/assets/raw/
