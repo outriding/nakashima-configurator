@@ -13,11 +13,13 @@ import {
   useGLTF,
   ContactShadows,
   Center,
+  useTexture,
 } from "@react-three/drei";
 import { KTX2Loader } from "three-stdlib";
 import { type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSelectedWood, useSelectedFabric } from "@/lib/configuratorStore";
+import { woods } from "@/lib/chairConfig";
 
 const ktx2Loader = new KTX2Loader().setTranscoderPath("/basis/");
 
@@ -35,6 +37,17 @@ type ChairGLTF = GLTF & {
 };
 
 const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
+const woodColorUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.map!]),
+);
+const woodNormalUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.normalMap!]),
+);
+const woodRoughUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.roughnessMap!]),
+);
+
+const WOOD_REPEAT = 4;
 
 function Chair(props: ThreeElements["group"]) {
   const { gl } = useThree();
@@ -45,10 +58,39 @@ function Chair(props: ThreeElements["group"]) {
   const wood = useSelectedWood();
   const fabric = useSelectedFabric();
 
-  useFrame(() => {
-    if (wood.hex) materials.frame.color.set(wood.hex);
+  // All wood textures preloaded once — swapping picks an already-loaded texture.
+  const woodColor = useTexture(woodColorUrls);
+  const woodNormal = useTexture(woodNormalUrls);
+  const woodRough = useTexture(woodRoughUrls);
+
+  useEffect(() => {
+    const color = woodColor[wood.id];
+    const normal = woodNormal[wood.id];
+    const rough = woodRough[wood.id];
+
+    color.colorSpace = THREE.SRGBColorSpace; // albedo only — normal/roughness stay linear
+
+    for (const t of [color, normal, rough]) {
+      t.center.set(0.5, 0.5);
+      t.rotation = Math.PI / 2;
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(WOOD_REPEAT, WOOD_REPEAT);
+      t.needsUpdate = true;
+    }
+
+    const m = materials.frame;
+    m.map = color;
+    m.normalMap = normal;
+    m.roughnessMap = rough;
+    m.color.set("#ffffff"); // clear the tint or it multiplies the texture
+    m.roughness = 1; // let the map drive roughness fully
+    m.needsUpdate = true;
+  }, [wood.id, woodColor, woodNormal, woodRough, materials]);
+
+  // Fabric stays on hex tint until you source fabric textures.
+  useEffect(() => {
     if (fabric.hex) materials.cusion.color.set(fabric.hex);
-  });
+  }, [fabric.id, fabric.hex, materials]);
 
   return (
     <group {...props} dispose={null}>

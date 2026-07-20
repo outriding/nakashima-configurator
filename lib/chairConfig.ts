@@ -3,6 +3,8 @@ export type OptionValue = {
   label: string;
   price: number;
   map?: string;
+  normalMap?: string;
+  roughnessMap?: string;
   hex?: string;
 };
 
@@ -12,13 +14,17 @@ export const woods = {
     label: "Walnut",
     price: 0,
     map: "/textures/wood/walnut.jpg",
-    hex: "#353934",
+    normalMap: "/textures/wood/walnut_normal.jpg",
+    roughnessMap: "/textures/wood/walnut_rough.jpg",
+    hex: "#5c4033",
   },
   oak: {
     id: "oak",
     label: "Oak",
     price: 80,
     map: "/textures/wood/oak.jpg",
+    normalMap: "/textures/wood/oak_normal.jpg",
+    roughnessMap: "/textures/wood/oak_rough.jpg",
     hex: "#c19a6b",
   },
   ebony: {
@@ -26,6 +32,8 @@ export const woods = {
     label: "Ebony",
     price: 120,
     map: "/textures/wood/ebony.jpg",
+    normalMap: "/textures/wood/ebony_normal.jpg",
+    roughnessMap: "/textures/wood/ebony_rough.jpg",
     hex: "#2b2b2b",
   },
 } as const satisfies Record<string, OptionValue>;
