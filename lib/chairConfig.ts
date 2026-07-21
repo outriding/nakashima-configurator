@@ -8,6 +8,12 @@ export type OptionValue = {
   hex?: string;
 };
 
+type TexturedOption = OptionValue & {
+  map: string;
+  normalMap: string;
+  roughnessMap: string;
+};
+
 export const woods = {
   walnut: {
     id: "walnut",
@@ -36,7 +42,7 @@ export const woods = {
     roughnessMap: "/textures/wood/ebony_rough.jpg",
     hex: "#2b2b2b",
   },
-} as const satisfies Record<string, OptionValue>;
+} as const satisfies Record<string, TexturedOption>;
 
 export const fabrics = {
   linen: {
@@ -44,21 +50,21 @@ export const fabrics = {
     label: "Linen",
     price: 0,
     map: "/textures/fabric/linen.jpg",
-    hex: "#726DE8",
+    hex: "#e8e4da",
   },
   velvet: {
     id: "velvet",
     label: "Velvet",
     price: 150,
     map: "/textures/fabric/velvet.jpg",
-    hex: "#c19a6b",
+    hex: "#2f4f4f",
   },
   leather: {
     id: "leather",
     label: "Leather",
     price: 300,
     map: "/textures/fabric/leather.jpg",
-    hex: "#c19a6b",
+    hex: "#8b5a3c",
   },
 } as const satisfies Record<string, OptionValue>;
 

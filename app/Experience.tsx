@@ -1,12 +1,7 @@
 "use client";
 
 import * as THREE from "three";
-import {
-  Canvas,
-  useThree,
-  type ThreeElements,
-  useFrame,
-} from "@react-three/fiber";
+import { Canvas, useThree, type ThreeElements } from "@react-three/fiber";
 import {
   OrbitControls,
   Environment,
@@ -17,7 +12,7 @@ import {
 } from "@react-three/drei";
 import { KTX2Loader } from "three-stdlib";
 import { type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { useSelectedWood, useSelectedFabric } from "@/lib/configuratorStore";
 import { woods } from "@/lib/chairConfig";
 
@@ -37,17 +32,36 @@ type ChairGLTF = GLTF & {
 };
 
 const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
+
 const woodColorUrls = Object.fromEntries(
-  Object.values(woods).map((w) => [w.id, w.map!]),
+  Object.values(woods).map((w) => [w.id, w.map]),
 );
 const woodNormalUrls = Object.fromEntries(
-  Object.values(woods).map((w) => [w.id, w.normalMap!]),
+  Object.values(woods).map((w) => [w.id, w.normalMap]),
 );
 const woodRoughUrls = Object.fromEntries(
-  Object.values(woods).map((w) => [w.id, w.roughnessMap!]),
+  Object.values(woods).map((w) => [w.id, w.roughnessMap]),
 );
 
-const WOOD_REPEAT = 4;
+const WOOD_REPEAT = 2;
+
+function configureColor(textures: Record<string, THREE.Texture>) {
+  Object.values(textures).forEach((t) => {
+    t.colorSpace = THREE.SRGBColorSpace;
+    tile(t);
+  });
+}
+
+function configureData(textures: Record<string, THREE.Texture>) {
+  Object.values(textures).forEach(tile);
+}
+
+function tile(t: THREE.Texture) {
+  t.center.set(0.5, 0.5);
+  t.rotation = Math.PI / 2;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(WOOD_REPEAT, WOOD_REPEAT);
+}
 
 function Chair(props: ThreeElements["group"]) {
   const { gl } = useThree();
@@ -58,54 +72,29 @@ function Chair(props: ThreeElements["group"]) {
   const wood = useSelectedWood();
   const fabric = useSelectedFabric();
 
-  // All wood textures preloaded once — swapping picks an already-loaded texture.
-  const woodColor = useTexture(woodColorUrls);
-  const woodNormal = useTexture(woodNormalUrls);
-  const woodRough = useTexture(woodRoughUrls);
-
-  useEffect(() => {
-    const color = woodColor[wood.id];
-    const normal = woodNormal[wood.id];
-    const rough = woodRough[wood.id];
-
-    color.colorSpace = THREE.SRGBColorSpace; // albedo only — normal/roughness stay linear
-
-    for (const t of [color, normal, rough]) {
-      t.center.set(0.5, 0.5);
-      t.rotation = Math.PI / 2;
-      t.wrapS = t.wrapT = THREE.RepeatWrapping;
-      t.repeat.set(WOOD_REPEAT, WOOD_REPEAT);
-      t.needsUpdate = true;
-    }
-
-    const m = materials.frame;
-    m.map = color;
-    m.normalMap = normal;
-    m.roughnessMap = rough;
-    m.color.set("#ffffff"); // clear the tint or it multiplies the texture
-    m.roughness = 1; // let the map drive roughness fully
-    m.needsUpdate = true;
-  }, [wood.id, woodColor, woodNormal, woodRough, materials]);
-
-  // Fabric stays on hex tint until you source fabric textures.
-  useEffect(() => {
-    if (fabric.hex) materials.cusion.color.set(fabric.hex);
-  }, [fabric.id, fabric.hex, materials]);
+  const woodColor = useTexture(woodColorUrls, configureColor);
+  const woodNormal = useTexture(woodNormalUrls, configureData);
+  const woodRough = useTexture(woodRoughUrls, configureData);
 
   return (
     <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Box064_1.geometry}
-        material={materials.cusion}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Box064_2.geometry}
-        material={materials.frame}
-      />
+      <mesh castShadow receiveShadow geometry={nodes.Box064_1.geometry}>
+        <meshStandardMaterial
+          map={materials.cusion.map}
+          color={fabric.hex}
+          roughness={materials.cusion.roughness}
+        />
+      </mesh>
+
+      <mesh castShadow receiveShadow geometry={nodes.Box064_2.geometry}>
+        <meshStandardMaterial
+          map={woodColor[wood.id]}
+          normalMap={woodNormal[wood.id]}
+          roughnessMap={woodRough[wood.id]}
+          roughness={1}
+        />
+      </mesh>
+
       <mesh
         castShadow
         receiveShadow
