@@ -3,7 +3,15 @@ export type OptionValue = {
   label: string;
   price: number;
   map?: string;
+  normalMap?: string;
+  roughnessMap?: string;
   hex?: string;
+};
+
+type TexturedOption = OptionValue & {
+  map: string;
+  normalMap: string;
+  roughnessMap: string;
 };
 
 export const woods = {
@@ -12,13 +20,17 @@ export const woods = {
     label: "Walnut",
     price: 0,
     map: "/textures/wood/walnut.jpg",
-    hex: "#353934",
+    normalMap: "/textures/wood/walnut_normal.jpg",
+    roughnessMap: "/textures/wood/walnut_rough.jpg",
+    hex: "#5c4033",
   },
   oak: {
     id: "oak",
     label: "Oak",
     price: 80,
     map: "/textures/wood/oak.jpg",
+    normalMap: "/textures/wood/oak_normal.jpg",
+    roughnessMap: "/textures/wood/oak_rough.jpg",
     hex: "#c19a6b",
   },
   ebony: {
@@ -26,9 +38,11 @@ export const woods = {
     label: "Ebony",
     price: 120,
     map: "/textures/wood/ebony.jpg",
+    normalMap: "/textures/wood/ebony_normal.jpg",
+    roughnessMap: "/textures/wood/ebony_rough.jpg",
     hex: "#2b2b2b",
   },
-} as const satisfies Record<string, OptionValue>;
+} as const satisfies Record<string, TexturedOption>;
 
 export const fabrics = {
   linen: {
@@ -36,21 +50,23 @@ export const fabrics = {
     label: "Linen",
     price: 0,
     map: "/textures/fabric/linen.jpg",
-    hex: "#726DE8",
+    hex: "#e8e4da",
   },
   velvet: {
     id: "velvet",
     label: "Velvet",
     price: 150,
     map: "/textures/fabric/velvet.jpg",
-    hex: "#c19a6b",
+    hex: "#2f4f4f",
   },
   leather: {
     id: "leather",
     label: "Leather",
     price: 300,
-    map: "/textures/fabric/leather.jpg",
-    hex: "#c19a6b",
+    map: "/textures/fabric/leather_color.jpg",
+    normalMap: "/textures/fabric/leather_normal.jpg",
+    roughnessMap: "/textures/fabric/leather_rough.jpg",
+    hex: "#8b5a3c",
   },
 } as const satisfies Record<string, OptionValue>;
 
@@ -73,3 +89,9 @@ export const woodFabricRules: Record<WoodKey, FabricKey[]> = {
   oak: ["linen", "velvet"],
   ebony: ["leather"],
 };
+
+/** Which woods permit a given fabric — derived from woodFabricRules, so it can't drift. */
+export const woodsAllowingFabric = (fabricId: FabricKey): string[] =>
+  (Object.keys(woodFabricRules) as WoodKey[])
+    .filter((woodId) => woodFabricRules[woodId].includes(fabricId))
+    .map((woodId) => woods[woodId].label);

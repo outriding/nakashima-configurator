@@ -1,7 +1,7 @@
 // app/Overlay.tsx
 "use client";
 
-import { chairConfig } from "@/lib/chairConfig";
+import { chairConfig, woodsAllowingFabric } from "@/lib/chairConfig";
 import {
   useSelectedWoodId,
   useSelectedFabricId,
@@ -54,15 +54,23 @@ export function Overlay() {
       <section style={{ pointerEvents: "auto" }}>
         <h3>Fabric</h3>
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          {availableFabricIds.map((id) => {
-            const fabric = chairConfig.fabrics[id];
+          {Object.values(chairConfig.fabrics).map((fabric) => {
+            const available = availableFabricIds.includes(fabric.id);
             return (
               <button
                 key={fabric.id}
+                disabled={!available}
                 onClick={() => selectFabric(fabric.id)}
+                title={
+                  available
+                    ? undefined
+                    : `Available with ${woodsAllowingFabric(fabric.id).join(" or ")} frame`
+                }
                 style={{
                   fontWeight:
                     fabric.id === selectedFabricId ? "bold" : "normal",
+                  opacity: available ? 1 : 0.4,
+                  cursor: available ? "pointer" : "not-allowed",
                 }}
               >
                 {fabric.label}

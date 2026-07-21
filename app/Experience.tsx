@@ -1,23 +1,20 @@
 "use client";
 
 import * as THREE from "three";
-import {
-  Canvas,
-  useThree,
-  type ThreeElements,
-  useFrame,
-} from "@react-three/fiber";
+import { Canvas, useThree, type ThreeElements } from "@react-three/fiber";
 import {
   OrbitControls,
   Environment,
   useGLTF,
   ContactShadows,
   Center,
+  useTexture,
 } from "@react-three/drei";
 import { KTX2Loader } from "three-stdlib";
 import { type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Suspense } from "react";
 import { useSelectedWood, useSelectedFabric } from "@/lib/configuratorStore";
+import { woods, fabrics } from "@/lib/chairConfig";
 
 const ktx2Loader = new KTX2Loader().setTranscoderPath("/basis/");
 
@@ -34,39 +31,113 @@ type ChairGLTF = GLTF & {
   };
 };
 
+// Fetch model locally or on vercel
+const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
+
+// --- TEXTURES ----
+const woodColorUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.map]),
+);
+const woodNormalUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.normalMap]),
+);
+const woodRoughUrls = Object.fromEntries(
+  Object.values(woods).map((w) => [w.id, w.roughnessMap]),
+);
+
+const WOOD_REPEAT = 2;
+
+function configureWoodColor(textures: Record<string, THREE.Texture>) {
+  Object.values(textures).forEach((t) => {
+    t.colorSpace = THREE.SRGBColorSpace;
+    tileWood(t);
+  });
+}
+function configureWoodData(textures: Record<string, THREE.Texture>) {
+  Object.values(textures).forEach(tileWood);
+}
+
+// Apply transformations to wood textures
+function tileWood(t: THREE.Texture) {
+  t.center.set(0.5, 0.5);
+  t.rotation = Math.PI / 2;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(WOOD_REPEAT, WOOD_REPEAT);
+}
+
+// Leather
+// Only leather brings its own textures. Linen and velvet tint the model's baked weave. If a second fabric gains textures, switch to the record form used for woods.
+const leatherUrls = {
+  color: fabrics.leather.map,
+  normal: fabrics.leather.normalMap,
+  rough: fabrics.leather.roughnessMap,
+};
+
+// Apply transformations to fabric textures
+const FABRIC_REPEAT = 10;
+
+function tileFabric(t: THREE.Texture) {
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(FABRIC_REPEAT, FABRIC_REPEAT);
+}
+
+const configureFabricColor = (t: THREE.Texture) => {
+  t.colorSpace = THREE.SRGBColorSpace;
+  tileFabric(t);
+};
+
+const configureFabricData = (t: THREE.Texture) => tileFabric(t);
+
 function Chair(props: ThreeElements["group"]) {
   const { gl } = useThree();
-  const { nodes, materials } = useGLTF(
-    "/chair_optimized.glb",
-    true,
-    false,
-    (loader) => {
-      loader.setKTX2Loader(ktx2Loader.detectSupport(gl));
-    },
-  ) as unknown as ChairGLTF;
+  const { nodes, materials } = useGLTF(MODEL_URL, true, false, (loader) => {
+    loader.setKTX2Loader(ktx2Loader.detectSupport(gl));
+  }) as unknown as ChairGLTF;
 
+  // Get current wood or fabric
   const wood = useSelectedWood();
   const fabric = useSelectedFabric();
 
-  useFrame(() => {
-    if (wood.hex) materials.frame.color.set(wood.hex);
-    if (fabric.hex) materials.cusion.color.set(fabric.hex);
-  });
+  // Get and update textures
+  const woodColor = useTexture(woodColorUrls, configureWoodColor);
+  const woodNormal = useTexture(woodNormalUrls, configureWoodData);
+  const woodRough = useTexture(woodRoughUrls, configureWoodData);
+
+  const fabricColor = useTexture(leatherUrls.color, configureFabricColor);
+  const fabricNormal = useTexture(leatherUrls.normal, configureFabricData);
+  const fabricRough = useTexture(leatherUrls.rough, configureFabricData);
+  const isLeather = fabric.id === "leather";
 
   return (
     <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Box064_1.geometry}
-        material={materials.cusion}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Box064_2.geometry}
-        material={materials.frame}
-      />
+      <mesh castShadow receiveShadow geometry={nodes.Box064_1.geometry}>
+        {isLeather ? (
+          <meshStandardMaterial
+            key={isLeather ? "leather" : "woven"}
+            map={fabricColor}
+            normalMap={fabricNormal}
+            roughnessMap={fabricRough}
+            color={fabric.hex}
+            roughness={1}
+          />
+        ) : (
+          <meshStandardMaterial
+            key={isLeather ? "leather" : "woven"}
+            map={materials.cusion.map}
+            color={fabric.hex}
+            roughness={materials.cusion.roughness}
+          />
+        )}
+      </mesh>
+      <mesh castShadow receiveShadow geometry={nodes.Box064_2.geometry}>
+        <meshStandardMaterial
+          map={woodColor[wood.id]}
+          normalMap={woodNormal[wood.id]}
+          roughnessMap={woodRough[wood.id]}
+          roughness={1}
+        />
+      </mesh>
+
       <mesh
         castShadow
         receiveShadow
