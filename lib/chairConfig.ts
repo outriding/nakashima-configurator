@@ -63,7 +63,9 @@ export const fabrics = {
     id: "leather",
     label: "Leather",
     price: 300,
-    map: "/textures/fabric/leather.jpg",
+    map: "/textures/fabric/leather_color.jpg",
+    normalMap: "/textures/fabric/leather_normal.jpg",
+    roughnessMap: "/textures/fabric/leather_rough.jpg",
     hex: "#8b5a3c",
   },
 } as const satisfies Record<string, OptionValue>;
