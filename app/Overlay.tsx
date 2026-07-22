@@ -2,13 +2,16 @@
 "use client";
 
 import { chairConfig, woodsAllowingFabric } from "@/lib/chairConfig";
+import type { WoodKey, FabricKey } from "@/lib/chairConfig";
 import {
   useSelectedWoodId,
   useSelectedFabricId,
   useAvailableFabricIds,
   useTotalPrice,
   useChairActions,
+  getChairState,
 } from "@/lib/configuratorStore";
+import { useUrlSync } from "@/lib/useUrlSync";
 
 export function Overlay() {
   const selectedWoodId = useSelectedWoodId();
@@ -16,6 +19,22 @@ export function Overlay() {
   const availableFabricIds = useAvailableFabricIds();
   const totalPrice = useTotalPrice();
   const { selectWood, selectFabric } = useChairActions();
+
+  // Calling the hook also runs the one-time URL → store hydration on mount.
+  const setUrl = useUrlSync();
+
+  const handleWood = (id: WoodKey) => {
+    selectWood(id);
+    // A wood change may clamp the fabric — read the clamped result and
+    // mirror BOTH to the URL so it can't show a stale fabric.
+    const fabricNow = getChairState().selectedFabricId;
+    setUrl({ wood: id, fabric: fabricNow });
+  };
+
+  const handleFabric = (id: FabricKey) => {
+    selectFabric(id);
+    setUrl({ fabric: id });
+  };
 
   return (
     <div
@@ -39,7 +58,7 @@ export function Overlay() {
           {Object.values(chairConfig.woods).map((wood) => (
             <button
               key={wood.id}
-              onClick={() => selectWood(wood.id)}
+              onClick={() => handleWood(wood.id)}
               style={{
                 fontWeight: wood.id === selectedWoodId ? "bold" : "normal",
               }}
@@ -60,7 +79,7 @@ export function Overlay() {
               <button
                 key={fabric.id}
                 disabled={!available}
-                onClick={() => selectFabric(fabric.id)}
+                onClick={() => handleFabric(fabric.id)}
                 title={
                   available
                     ? undefined
