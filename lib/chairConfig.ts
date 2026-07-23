@@ -79,6 +79,10 @@ export const chairConfig = {
 export type WoodKey = keyof typeof woods;
 export type FabricKey = keyof typeof fabrics;
 
+// Default values - store & search params
+export const DEFAULT_WOOD: WoodKey = "walnut";
+export const DEFAULT_FABRIC: FabricKey = "linen";
+
 export const valuesById: Record<string, OptionValue> = {
   ...woods,
   ...fabrics,

@@ -11,7 +11,7 @@ import {
   useChairActions,
   getChairState,
 } from "@/lib/configuratorStore";
-import { useUrlSync } from "@/lib/useUrlSync";
+import { useUrlWriter, useHydrateFromUrl } from "@/lib/urlSync";
 
 export function Overlay() {
   const selectedWoodId = useSelectedWoodId();
@@ -20,17 +20,19 @@ export function Overlay() {
   const totalPrice = useTotalPrice();
   const { selectWood, selectFabric } = useChairActions();
 
-  // Calling the hook also runs the one-time URL → store hydration on mount.
-  const setUrl = useUrlSync();
+  // Update Zustand store with values from URL (runs once on mount)
+  useHydrateFromUrl();
+  // Push changes from the store --> URL
+  const setUrl = useUrlWriter();
 
+  // Update store and URL
   const handleWood = (id: WoodKey) => {
     selectWood(id);
-    // A wood change may clamp the fabric — read the clamped result and
-    // mirror BOTH to the URL so it can't show a stale fabric.
     const fabricNow = getChairState().selectedFabricId;
     setUrl({ wood: id, fabric: fabricNow });
   };
 
+  // Update store and URL
   const handleFabric = (id: FabricKey) => {
     selectFabric(id);
     setUrl({ fabric: id });

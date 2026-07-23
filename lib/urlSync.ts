@@ -4,22 +4,23 @@ import { useEffect, useRef } from "react";
 import { woodParser, fabricParser } from "@/lib/searchParams";
 import { useHydrate } from "@/lib/configuratorStore";
 
-export function useUrlSync() {
-  const [{ wood, fabric }, setUrl] = useQueryStates({
-    wood: woodParser,
-    fabric: fabricParser,
-  });
+const searchParams = { wood: woodParser, fabric: fabricParser };
 
+// URL → store, once on mount.
+export function useHydrateFromUrl() {
+  const [{ wood, fabric }] = useQueryStates(searchParams);
   const hydrate = useHydrate();
   const didHydrate = useRef(false);
 
-  // URL → store, ONCE on mount. The ref guarantees this never re-runs, so
-  // later URL changes don't fight the store — that would be the two-way loop.
   useEffect(() => {
     if (didHydrate.current) return;
     didHydrate.current = true;
     hydrate(wood, fabric);
   }, [wood, fabric, hydrate]);
+}
 
+/** store → URL. Called from selection handlers. */
+export function useUrlWriter() {
+  const [, setUrl] = useQueryStates(searchParams);
   return setUrl;
 }

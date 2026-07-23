@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { type WoodKey, type FabricKey } from "./chairConfig";
-import { chairConfig, woodFabricRules } from "./chairConfig";
+import {
+  chairConfig,
+  woodFabricRules,
+  DEFAULT_WOOD,
+  DEFAULT_FABRIC,
+} from "./chairConfig";
 import { useShallow } from "zustand/react/shallow";
 
 type State = {
@@ -18,8 +23,8 @@ type Actions = {
 const useStore = create<State & Actions>()(
   devtools(
     (set, get) => ({
-      selectedWoodId: "walnut",
-      selectedFabricId: "linen",
+      selectedWoodId: DEFAULT_WOOD,
+      selectedFabricId: DEFAULT_FABRIC,
 
       selectWood: (id) => {
         const { selectedFabricId } = get();
