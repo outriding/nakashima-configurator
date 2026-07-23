@@ -2,13 +2,16 @@
 "use client";
 
 import { chairConfig, woodsAllowingFabric } from "@/lib/chairConfig";
+import type { WoodKey, FabricKey } from "@/lib/chairConfig";
 import {
   useSelectedWoodId,
   useSelectedFabricId,
   useAvailableFabricIds,
   useTotalPrice,
   useChairActions,
+  getChairState,
 } from "@/lib/configuratorStore";
+import { useUrlWriter, useHydrateFromUrl } from "@/lib/urlSync";
 
 export function Overlay() {
   const selectedWoodId = useSelectedWoodId();
@@ -16,6 +19,24 @@ export function Overlay() {
   const availableFabricIds = useAvailableFabricIds();
   const totalPrice = useTotalPrice();
   const { selectWood, selectFabric } = useChairActions();
+
+  // Update Zustand store with values from URL (runs once on mount)
+  useHydrateFromUrl();
+  // Push changes from the store --> URL
+  const setUrl = useUrlWriter();
+
+  // Update store and URL
+  const handleWood = (id: WoodKey) => {
+    selectWood(id);
+    const fabricNow = getChairState().selectedFabricId;
+    setUrl({ wood: id, fabric: fabricNow });
+  };
+
+  // Update store and URL
+  const handleFabric = (id: FabricKey) => {
+    selectFabric(id);
+    setUrl({ fabric: id });
+  };
 
   return (
     <div
@@ -39,7 +60,7 @@ export function Overlay() {
           {Object.values(chairConfig.woods).map((wood) => (
             <button
               key={wood.id}
-              onClick={() => selectWood(wood.id)}
+              onClick={() => handleWood(wood.id)}
               style={{
                 fontWeight: wood.id === selectedWoodId ? "bold" : "normal",
               }}
@@ -60,7 +81,7 @@ export function Overlay() {
               <button
                 key={fabric.id}
                 disabled={!available}
-                onClick={() => selectFabric(fabric.id)}
+                onClick={() => handleFabric(fabric.id)}
                 title={
                   available
                     ? undefined

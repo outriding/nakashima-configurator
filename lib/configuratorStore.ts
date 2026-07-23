@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { type WoodKey, type FabricKey } from "./chairConfig";
-import { chairConfig, woodFabricRules } from "./chairConfig";
+import {
+  chairConfig,
+  woodFabricRules,
+  DEFAULT_WOOD,
+  DEFAULT_FABRIC,
+} from "./chairConfig";
 import { useShallow } from "zustand/react/shallow";
 
 type State = {
@@ -12,13 +17,14 @@ type State = {
 type Actions = {
   selectWood: (id: WoodKey) => void;
   selectFabric: (id: FabricKey) => void;
+  hydrate: (woodId: WoodKey, fabricId: FabricKey) => void;
 };
 
 const useStore = create<State & Actions>()(
   devtools(
     (set, get) => ({
-      selectedWoodId: "walnut",
-      selectedFabricId: "linen",
+      selectedWoodId: DEFAULT_WOOD,
+      selectedFabricId: DEFAULT_FABRIC,
 
       selectWood: (id) => {
         const { selectedFabricId } = get();
@@ -42,6 +48,15 @@ const useStore = create<State & Actions>()(
         const nextFabric = allowedFabrics.includes(id) ? id : allowedFabrics[0];
 
         set({ selectedFabricId: nextFabric }, false, "selectFabric");
+      },
+      hydrate: (woodId, fabricId) => {
+        const allowed = woodFabricRules[woodId];
+        const fabric = allowed.includes(fabricId) ? fabricId : allowed[0];
+        set(
+          { selectedWoodId: woodId, selectedFabricId: fabric },
+          false,
+          "hydrate",
+        );
       },
     }),
     {
@@ -79,6 +94,11 @@ export const useTotalPrice = () => {
     chairConfig.fabrics[fabricId].price
   );
 };
+
+export const useHydrate = () => useStore((s) => s.hydrate);
+
+// Imperitive Read Only
+export const getChairState = useStore.getState;
 
 // Actions hook
 export const useChairActions = () =>
