@@ -12,10 +12,10 @@ import {
   getChairState,
 } from "@/lib/configuratorStore";
 import { useUrlWriter, useHydrateFromUrl } from "@/lib/urlSync";
-import { Swatch } from "./components/Swatch";
-import OptionGroup from "./components/OptionGroup";
+import { Swatch } from "./Swatch";
+import OptionGroup from "./OptionGroup";
 
-export function Overlay() {
+export function Panel() {
   const selectedWoodId = useSelectedWoodId();
   const selectedFabricId = useSelectedFabricId();
   const availableFabricIds = useAvailableFabricIds();
@@ -39,12 +39,10 @@ export function Overlay() {
     selectFabric(id);
     setUrl({ fabric: id });
   };
-  console.log(OptionGroup);
 
   return (
     <div
       style={{
-        position: "absolute",
         top: 0,
         right: 0,
         height: "100%",
