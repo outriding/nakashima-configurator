@@ -15,15 +15,6 @@ type TexturedOption = OptionValue & {
 };
 
 export const woods = {
-  walnut: {
-    id: "walnut",
-    label: "Walnut",
-    price: 0,
-    map: "/textures/wood/walnut.jpg",
-    normalMap: "/textures/wood/walnut_normal.jpg",
-    roughnessMap: "/textures/wood/walnut_rough.jpg",
-    hex: "#5c4033",
-  },
   oak: {
     id: "oak",
     label: "Oak",
@@ -33,6 +24,16 @@ export const woods = {
     roughnessMap: "/textures/wood/oak_rough.jpg",
     hex: "#c19a6b",
   },
+  walnut: {
+    id: "walnut",
+    label: "Walnut",
+    price: 0,
+    map: "/textures/wood/walnut.jpg",
+    normalMap: "/textures/wood/walnut_normal.jpg",
+    roughnessMap: "/textures/wood/walnut_rough.jpg",
+    hex: "#5c4033",
+  },
+
   ebony: {
     id: "ebony",
     label: "Ebony",

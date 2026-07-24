@@ -12,6 +12,8 @@ import {
   getChairState,
 } from "@/lib/configuratorStore";
 import { useUrlWriter, useHydrateFromUrl } from "@/lib/urlSync";
+import { Swatch } from "./components/Swatch";
+import OptionGroup from "./components/OptionGroup";
 
 export function Overlay() {
   const selectedWoodId = useSelectedWoodId();
@@ -37,6 +39,7 @@ export function Overlay() {
     selectFabric(id);
     setUrl({ fabric: id });
   };
+  console.log(OptionGroup);
 
   return (
     <div
@@ -104,6 +107,8 @@ export function Overlay() {
       {/* Price */}
       <section style={{ pointerEvents: "auto", marginTop: "auto" }}>
         <strong>${totalPrice}</strong>
+
+        <OptionGroup label="wood finish" values={chairConfig.woods} />
       </section>
     </div>
   );
