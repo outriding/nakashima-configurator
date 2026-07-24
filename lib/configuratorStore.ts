@@ -100,6 +100,13 @@ export const useHydrate = () => useStore((s) => s.hydrate);
 // Imperitive Read Only
 export const getChairState = useStore.getState;
 
+// Restores initial state. Used by tests
+export const resetStore = () =>
+  useStore.setState({
+    selectedWoodId: DEFAULT_WOOD,
+    selectedFabricId: DEFAULT_FABRIC,
+  });
+
 // Actions hook
 export const useChairActions = () =>
   useStore(
