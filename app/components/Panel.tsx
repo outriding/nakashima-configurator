@@ -41,7 +41,7 @@ export function Panel() {
   };
 
   return (
-    <div className="top-0 right-0 h-full w-80 px-12 pt-22 flex flex-col gap-10 pointer-events-none">
+    <div className="top-0 right-0 h-full w-80 px-12 pt-22 flex flex-col gap-10 pointer-events-auto">
       {/* Price */}
       <section className="flex flex-col">
         <h1>Nakashima lounge chair</h1>
@@ -50,11 +50,21 @@ export function Panel() {
 
       {/* Wood */}
       <section>
-        <OptionGroup label="wood finish" values={chairConfig.woods} />
+        <OptionGroup
+          type="wood"
+          label="wood finish"
+          values={chairConfig.woods}
+          handleClick={(id: WoodKey) => handleWood(id)}
+        />
       </section>
       {/* Fabric */}
       <section>
-        <OptionGroup label="fabrics" values={chairConfig.fabrics} />
+        <OptionGroup
+          type="fabric"
+          label="fabrics"
+          values={chairConfig.fabrics}
+          handleClick={(id: FabricKey) => handleFabric(id)}
+        />
       </section>
     </div>
   );

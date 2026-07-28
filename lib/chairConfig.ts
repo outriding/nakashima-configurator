@@ -15,15 +15,6 @@ type TexturedOption = OptionValue & {
 };
 
 export const woods = {
-  oak: {
-    id: "oak",
-    label: "Oak",
-    price: 80,
-    map: "/textures/wood/oak.jpg",
-    normalMap: "/textures/wood/oak_normal.jpg",
-    roughnessMap: "/textures/wood/oak_rough.jpg",
-    hex: "#c19a6b",
-  },
   walnut: {
     id: "walnut",
     label: "Walnut",
@@ -32,6 +23,16 @@ export const woods = {
     normalMap: "/textures/wood/walnut_normal.jpg",
     roughnessMap: "/textures/wood/walnut_rough.jpg",
     hex: "#5c4033",
+  },
+
+  oak: {
+    id: "oak",
+    label: "Oak",
+    price: 80,
+    map: "/textures/wood/oak.jpg",
+    normalMap: "/textures/wood/oak_normal.jpg",
+    roughnessMap: "/textures/wood/oak_rough.jpg",
+    hex: "#c19a6b",
   },
 
   ebony: {
@@ -50,14 +51,14 @@ export const fabrics = {
     id: "linen",
     label: "Linen",
     price: 0,
-    map: "/textures/fabric/linen.jpg",
+    // map: "/textures/fabric/linen.jpg",
     hex: "#e8e4da",
   },
   velvet: {
     id: "velvet",
     label: "Velvet",
     price: 150,
-    map: "/textures/fabric/velvet.jpg",
+    // map: "/textures/fabric/velvet.jpg",
     hex: "#2f4f4f",
   },
   leather: {
