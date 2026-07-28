@@ -11,12 +11,12 @@ type OptionGroupType = {
 
 export default function OptionGroup({ label, values }: OptionGroupType) {
   return (
-    <>
-      <h2>{label}</h2>
-      <div className="flex">
+    <div className="flex flex-col gap-3">
+      <h2 className="uppercase">{label}</h2>
+      <div className="flex gap-4">
         {Object.values(values).map((value) => {
           return (
-            <div key={value.id} className="mr-4">
+            <div key={value.id}>
               <Swatch
                 label={value.label}
                 onClick={() => {}}
@@ -27,6 +27,6 @@ export default function OptionGroup({ label, values }: OptionGroupType) {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

@@ -41,73 +41,69 @@ export function Panel() {
   };
 
   return (
-    <div
-      style={{
-        top: 0,
-        right: 0,
-        height: "100%",
-        width: "320px",
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1.5rem",
-        pointerEvents: "none",
-      }}
-    >
-      {/* Wood */}
-      <section style={{ pointerEvents: "auto" }}>
-        <h3>Wood finish</h3>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {Object.values(chairConfig.woods).map((wood) => (
-            <button
-              key={wood.id}
-              onClick={() => handleWood(wood.id)}
-              style={{
-                fontWeight: wood.id === selectedWoodId ? "bold" : "normal",
-              }}
-            >
-              {wood.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Fabric — only shows options valid for the current wood */}
-      <section style={{ pointerEvents: "auto" }}>
-        <h3>Fabric</h3>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {Object.values(chairConfig.fabrics).map((fabric) => {
-            const available = availableFabricIds.includes(fabric.id);
-            return (
-              <button
-                key={fabric.id}
-                disabled={!available}
-                onClick={() => handleFabric(fabric.id)}
-                title={
-                  available
-                    ? undefined
-                    : `Available with ${woodsAllowingFabric(fabric.id).join(" or ")} frame`
-                }
-                style={{
-                  fontWeight:
-                    fabric.id === selectedFabricId ? "bold" : "normal",
-                  opacity: available ? 1 : 0.4,
-                  cursor: available ? "pointer" : "not-allowed",
-                }}
-              >
-                {fabric.label}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
+    <div className="top-0 right-0 h-full w-80 px-12 pt-22 flex flex-col gap-10 pointer-events-none">
       {/* Price */}
-      <section style={{ pointerEvents: "auto", marginTop: "auto" }}>
-        <strong>${totalPrice}</strong>
+      <section className="flex flex-col">
+        <h1>Nakashima lounge chair</h1>
+        <h2 className="text-4xl font-semibold">${totalPrice}</h2>
+      </section>
 
+      {/* Wood */}
+      <section>
         <OptionGroup label="wood finish" values={chairConfig.woods} />
+      </section>
+      {/* Fabric */}
+      <section>
+        <OptionGroup label="fabrics" values={chairConfig.fabrics} />
       </section>
     </div>
   );
 }
+
+// {/* Wood */}
+//     <section style={{ pointerEvents: "auto" }}>
+//       <h3>Wood finish</h3>
+//       <div style={{ display: "flex", gap: "0.5rem" }}>
+//         {Object.values(chairConfig.woods).map((wood) => (
+//           <button
+//             key={wood.id}
+//             onClick={() => handleWood(wood.id)}
+//             style={{
+//               fontWeight: wood.id === selectedWoodId ? "bold" : "normal",
+//             }}
+//           >
+//             {wood.label}
+//           </button>
+//         ))}
+//       </div>
+//     </section>
+
+//     {/* Fabric — only shows options valid for the current wood */}
+//     <section style={{ pointerEvents: "auto" }}>
+//       <h3>Fabric</h3>
+//       <div style={{ display: "flex", gap: "0.5rem" }}>
+//         {Object.values(chairConfig.fabrics).map((fabric) => {
+//           const available = availableFabricIds.includes(fabric.id);
+//           return (
+//             <button
+//               key={fabric.id}
+//               disabled={!available}
+//               onClick={() => handleFabric(fabric.id)}
+//               title={
+//                 available
+//                   ? undefined
+//                   : `Available with ${woodsAllowingFabric(fabric.id).join(" or ")} frame`
+//               }
+//               style={{
+//                 fontWeight:
+//                   fabric.id === selectedFabricId ? "bold" : "normal",
+//                 opacity: available ? 1 : 0.4,
+//                 cursor: available ? "pointer" : "not-allowed",
+//               }}
+//             >
+//               {fabric.label}
+//             </button>
+//           );
+//         })}
+//       </div>
+//     </section>
