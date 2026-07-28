@@ -1,5 +1,7 @@
 "use client";
 
+import { Link, Lock, Check } from "lucide-react";
+
 type SwatchProps = {
   label: string;
   /** Price delta in whole currency units. Omitted or 0 renders nothing. */
@@ -51,10 +53,10 @@ export function Swatch({
       <span
         style={chipStyle}
         className={[
-          "relative block h-12 w-12 rounded-md bg-cover transition",
+          "relative block h-12 w-12 rounded-md  transition",
           "focus-visible:outline-none",
           selected
-            ? "ring-[1.5px] ring-neutral-900 ring-offset-4 ring-offset-[#FAF9F5]"
+            ? "ring-[1.5px] ring-neutral-900 ring-offset-3 ring-offset-[#FAF9F5]"
             : "",
           disabled
             ? "opacity-40 saturate-50"
@@ -62,26 +64,14 @@ export function Swatch({
         ].join(" ")}
       >
         {selected && !disabled && (
-          <span className="absolute -right-1.5 -top-1.5 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-900 text-[9px] text-white">
-            ✓
+          <span className="absolute -right-1.5 -top-1.5 flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-900 text-white">
+            <Check className="h-2.5 w-2.5" strokeWidth={3} />
           </span>
         )}
 
         {disabled && (
           <span className="absolute inset-0 flex items-center justify-center">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              className="h-4 w-4 text-white/90"
-            >
-              <path
-                d="M7 11V7a5 5 0 0110 0v4M6 11h12v9H6z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Lock className="h-4 w-4 text-black/100" strokeWidth={2} />
           </span>
         )}
       </span>
@@ -100,7 +90,7 @@ export function Swatch({
       </span>
 
       {priceDelta ? (
-        <span className="mt-px block text-[10px] text-neutral-400">
+        <span className=" block text-[10px] text-neutral-400">
           +${priceDelta}
         </span>
       ) : null}

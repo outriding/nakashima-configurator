@@ -9,6 +9,9 @@ export default function Home() {
           refusing to shrink it below its content size. */}
       <div className="min-w-0 flex-1">
         <Experience />
+        <p className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-neutral-400">
+          Drag to rotate · scroll to zoom
+        </p>
       </div>
 
       {/* Panel reads search params, so it can't be prerendered. */}

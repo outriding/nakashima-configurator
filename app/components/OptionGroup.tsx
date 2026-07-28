@@ -12,14 +12,16 @@ type Fabric = typeof chairConfig.fabrics;
 type OptionGroupType = {
   values: Woods | Fabric;
   label: string;
-  type: string;
+  type: "wood" | "fabric";
   handleClick: (id: WoodKey | FabricKey) => void;
+  note?: string;
 };
 
 export default function OptionGroup({
   label,
   values,
   type,
+  note,
   handleClick,
 }: OptionGroupType) {
   const selectedWoodId = useSelectedWoodId();
@@ -27,12 +29,11 @@ export default function OptionGroup({
   const availableFabricsIds = useAvailableFabricIds();
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="uppercase">{label}</h2>
+      <h2 className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+        {label}
+      </h2>
       <div className="flex gap-4">
         {Object.values(values).map((value) => {
-          {
-            console.log(values);
-          }
           return (
             <div key={value.id}>
               <Swatch
@@ -48,7 +49,9 @@ export default function OptionGroup({
                     ? !availableFabricsIds.includes(value.id as FabricKey)
                     : false
                 }
+                priceDelta={value.price}
               />
+              {note ? <p className="text-xs text-neutral-400">{note}</p> : null}
             </div>
           );
         })}

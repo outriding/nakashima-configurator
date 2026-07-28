@@ -1,119 +1,92 @@
-// app/Overlay.tsx
 "use client";
 
-import { chairConfig, woodsAllowingFabric } from "@/lib/chairConfig";
+import { chairConfig } from "@/lib/chairConfig";
 import type { WoodKey, FabricKey } from "@/lib/chairConfig";
 import {
-  useSelectedWoodId,
-  useSelectedFabricId,
-  useAvailableFabricIds,
   useTotalPrice,
   useChairActions,
   getChairState,
 } from "@/lib/configuratorStore";
 import { useUrlWriter, useHydrateFromUrl } from "@/lib/urlSync";
-import { Swatch } from "./Swatch";
 import OptionGroup from "./OptionGroup";
+import { useState, useEffect } from "react";
+import { Link as LinkIcon } from "lucide-react";
 
 export function Panel() {
-  const selectedWoodId = useSelectedWoodId();
-  const selectedFabricId = useSelectedFabricId();
-  const availableFabricIds = useAvailableFabricIds();
   const totalPrice = useTotalPrice();
   const { selectWood, selectFabric } = useChairActions();
+  const [copied, setCopied] = useState(false);
 
   // Update Zustand store with values from URL (runs once on mount)
   useHydrateFromUrl();
   // Push changes from the store --> URL
   const setUrl = useUrlWriter();
 
+  const syncUrl = () => {
+    const { selectedWoodId, selectedFabricId } = getChairState();
+    setUrl({ wood: selectedWoodId, fabric: selectedFabricId });
+  };
+
   // Update store and URL
   const handleWood = (id: WoodKey) => {
     selectWood(id);
-    const fabricNow = getChairState().selectedFabricId;
-    setUrl({ wood: id, fabric: fabricNow });
+    syncUrl();
   };
 
   // Update store and URL
   const handleFabric = (id: FabricKey) => {
     selectFabric(id);
-    setUrl({ fabric: id });
+    syncUrl();
   };
 
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+  };
+
+  useEffect(() => {
+    if (!copied) return;
+    const id = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(id); // rapid clicks would otherwise stack timers and flicker the label
+  }, [copied]);
+
   return (
-    <div className="top-0 right-0 h-full w-80 px-12 pt-22 flex flex-col gap-10 pointer-events-auto">
-      {/* Price */}
-      <section className="flex flex-col">
-        <h1>Nakashima lounge chair</h1>
-        <h2 className="text-4xl font-semibold">${totalPrice}</h2>
-      </section>
+    <div className="h-full w-90 px-12 pt-22 flex flex-col gap-10">
+      {/* Product + live price */}
+      <div className="flex flex-col">
+        <h1 className="text-sm text-neutral-500">Nakashima lounge chair</h1>
+        <p className="text-4xl font-semibold text-neutral-900">
+          ${totalPrice.toLocaleString()}
+        </p>
+      </div>
 
       {/* Wood */}
-      <section>
-        <OptionGroup
-          type="wood"
-          label="wood finish"
-          values={chairConfig.woods}
-          handleClick={(id: WoodKey) => handleWood(id)}
-        />
-      </section>
+      <OptionGroup
+        type="wood"
+        label="wood finish"
+        values={chairConfig.woods}
+        handleClick={(id: WoodKey) => handleWood(id)}
+      />
+
       {/* Fabric */}
-      <section>
-        <OptionGroup
-          type="fabric"
-          label="fabrics"
-          values={chairConfig.fabrics}
-          handleClick={(id: FabricKey) => handleFabric(id)}
-        />
-      </section>
+      <OptionGroup
+        type="fabric"
+        label="fabric"
+        values={chairConfig.fabrics}
+        handleClick={(id: FabricKey) => handleFabric(id)}
+      />
+
+      {/* Copy Button */}
+      <div className="border-t border-neutral-200 pt-6">
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-neutral-300 px-4 py-3 text-sm text-neutral-800 transition hover:border-neutral-400"
+        >
+          <LinkIcon className="h-4 w-4" strokeWidth={1.75} />
+          {copied ? "Copied" : "Copy link to this design"}
+        </button>
+      </div>
     </div>
   );
 }
-
-// {/* Wood */}
-//     <section style={{ pointerEvents: "auto" }}>
-//       <h3>Wood finish</h3>
-//       <div style={{ display: "flex", gap: "0.5rem" }}>
-//         {Object.values(chairConfig.woods).map((wood) => (
-//           <button
-//             key={wood.id}
-//             onClick={() => handleWood(wood.id)}
-//             style={{
-//               fontWeight: wood.id === selectedWoodId ? "bold" : "normal",
-//             }}
-//           >
-//             {wood.label}
-//           </button>
-//         ))}
-//       </div>
-//     </section>
-
-//     {/* Fabric — only shows options valid for the current wood */}
-//     <section style={{ pointerEvents: "auto" }}>
-//       <h3>Fabric</h3>
-//       <div style={{ display: "flex", gap: "0.5rem" }}>
-//         {Object.values(chairConfig.fabrics).map((fabric) => {
-//           const available = availableFabricIds.includes(fabric.id);
-//           return (
-//             <button
-//               key={fabric.id}
-//               disabled={!available}
-//               onClick={() => handleFabric(fabric.id)}
-//               title={
-//                 available
-//                   ? undefined
-//                   : `Available with ${woodsAllowingFabric(fabric.id).join(" or ")} frame`
-//               }
-//               style={{
-//                 fontWeight:
-//                   fabric.id === selectedFabricId ? "bold" : "normal",
-//                 opacity: available ? 1 : 0.4,
-//                 cursor: available ? "pointer" : "not-allowed",
-//               }}
-//             >
-//               {fabric.label}
-//             </button>
-//           );
-//         })}
-//       </div>
-//     </section>

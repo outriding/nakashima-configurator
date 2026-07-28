@@ -164,8 +164,8 @@ function Shadows() {
 
 export default function Experience() {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 40 }}>
-      <color args={["ghostwhite"]} attach="background" />
+    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 32 }}>
+      <color args={["#FAF9F5"]} attach="background" />
       <Suspense fallback={null}>
         <Environment preset="studio" />
         <Center>
