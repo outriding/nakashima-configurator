@@ -113,16 +113,26 @@ function Chair(props: ThreeElements["group"]) {
       <mesh castShadow receiveShadow geometry={nodes.Box064_1.geometry}>
         {isLeather ? (
           <meshStandardMaterial
-            key={isLeather ? "leather" : "woven"}
+            key="leather"
             map={fabricColor}
             normalMap={fabricNormal}
             roughnessMap={fabricRough}
             color={fabric.hex}
             roughness={1}
           />
+        ) : fabric.id === "velvet" ? (
+          <meshPhysicalMaterial
+            key="velvet"
+            map={materials.cusion.map}
+            color={fabric.hex}
+            roughness={0.9}
+            sheen={1}
+            sheenRoughness={0.8}
+            sheenColor={fabric.hex}
+          />
         ) : (
           <meshStandardMaterial
-            key={isLeather ? "leather" : "woven"}
+            key="woven"
             map={materials.cusion.map}
             color={fabric.hex}
             roughness={materials.cusion.roughness}
@@ -164,8 +174,8 @@ function Shadows() {
 
 export default function Experience() {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 40 }}>
-      <color args={["ghostwhite"]} attach="background" />
+    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 32 }}>
+      <color args={["#FAF9F5"]} attach="background" />
       <Suspense fallback={null}>
         <Environment preset="studio" />
         <Center>

@@ -6,6 +6,7 @@ export type OptionValue = {
   normalMap?: string;
   roughnessMap?: string;
   hex?: string;
+  tintSwatch?: boolean;
 };
 
 type TexturedOption = OptionValue & {
@@ -24,6 +25,7 @@ export const woods = {
     roughnessMap: "/textures/wood/walnut_rough.jpg",
     hex: "#5c4033",
   },
+
   oak: {
     id: "oak",
     label: "Oak",
@@ -33,6 +35,7 @@ export const woods = {
     roughnessMap: "/textures/wood/oak_rough.jpg",
     hex: "#c19a6b",
   },
+
   ebony: {
     id: "ebony",
     label: "Ebony",
@@ -49,15 +52,17 @@ export const fabrics = {
     id: "linen",
     label: "Linen",
     price: 0,
-    map: "/textures/fabric/linen.jpg",
+    map: "/textures/fabric/fabric_weave.jpg", // swatch preview only — model tints the baked weave
     hex: "#e8e4da",
+    tintSwatch: true,
   },
   velvet: {
     id: "velvet",
     label: "Velvet",
     price: 150,
-    map: "/textures/fabric/velvet.jpg",
+    map: "/textures/fabric/fabric_weave.jpg", // swatch preview only — model tints the baked weave
     hex: "#2f4f4f",
+    tintSwatch: true,
   },
   leather: {
     id: "leather",
@@ -99,3 +104,10 @@ export const woodsAllowingFabric = (fabricId: FabricKey): string[] =>
   (Object.keys(woodFabricRules) as WoodKey[])
     .filter((woodId) => woodFabricRules[woodId].includes(fabricId))
     .map((woodId) => woods[woodId].label);
+
+// Format for UI note (panel.tsx)
+export function formatList(labels: string[]): string {
+  const lower = labels.map((l) => l.toLowerCase());
+  if (lower.length <= 1) return lower[0] ?? "";
+  return `${lower.slice(0, -1).join(", ")} or ${lower[lower.length - 1]}`;
+}
