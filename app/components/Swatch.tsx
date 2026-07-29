@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, Lock, Check } from "lucide-react";
+import { Lock, Check } from "lucide-react";
 
 type SwatchProps = {
   label: string;
@@ -14,6 +14,7 @@ type SwatchProps = {
   disabled?: boolean;
   /** Why this option is unavailable. Surfaced as the chip's tooltip. */
   disabledReason?: string;
+  tint: boolean;
   onClick: () => void;
 };
 
@@ -25,13 +26,25 @@ export function Swatch({
   selected,
   disabled = false,
   disabledReason,
+  tint,
   onClick,
 }: SwatchProps) {
   // Zooming the texture shows grain rather than a whole tile squeezed into 48px.
+  // const chipStyle = map
+  //   ? {
+  //       backgroundImage: `url(${map})`,
+  //       backgroundSize: "800%",
+  //       backgroundPosition: "center",
+  //     }
+  //   : { backgroundColor: hex };
+
   const chipStyle = map
     ? {
         backgroundImage: `url(${map})`,
-        backgroundSize: "800%",
+        ...(tint
+          ? { backgroundColor: hex, backgroundBlendMode: "multiply" as const }
+          : {}),
+        backgroundSize: "200%",
         backgroundPosition: "center",
       }
     : { backgroundColor: hex };
@@ -39,8 +52,8 @@ export function Swatch({
   return (
     <button
       type="button"
-      onClick={onClick}
-      disabled={disabled}
+      onClick={disabled ? undefined : onClick}
+      aria-disabled={disabled}
       title={disabled ? disabledReason : label}
       aria-pressed={selected}
       aria-label={
@@ -48,7 +61,7 @@ export function Swatch({
           ? `${label}, unavailable. ${disabledReason ?? ""}`
           : `${label}${priceDelta ? `, plus $${priceDelta}` : ""}`
       }
-      className="group w-[62px] text-left disabled:cursor-not-allowed"
+      className="group w-[62px] cursor-pointer text-left aria-disabled:cursor-not-allowed"
     >
       <span
         style={chipStyle}
@@ -56,7 +69,7 @@ export function Swatch({
           "relative block h-12 w-12 rounded-md  transition",
           "focus-visible:outline-none",
           selected
-            ? "ring-[1.5px] ring-neutral-900 ring-offset-3 ring-offset-[#FAF9F5]"
+            ? "ring-[1.5px] ring-neutral-900 ring-offset-1 ring-offset-[#FAF9F5]"
             : "",
           disabled
             ? "opacity-40 saturate-50"
@@ -78,11 +91,11 @@ export function Swatch({
 
       <span
         className={[
-          "mt-2 block text-[11px]",
+          "mt-2 block text-xs",
           disabled
             ? "text-neutral-400"
             : selected
-              ? "text-neutral-900"
+              ? "font-medium text-neutral-900"
               : "text-neutral-600",
         ].join(" ")}
       >
@@ -90,7 +103,7 @@ export function Swatch({
       </span>
 
       {priceDelta ? (
-        <span className=" block text-[10px] text-neutral-400">
+        <span className="mt-px block text-[11px] text-neutral-500">
           +${priceDelta}
         </span>
       ) : null}

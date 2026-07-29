@@ -26,36 +26,43 @@ export default function OptionGroup({
 }: OptionGroupType) {
   const selectedWoodId = useSelectedWoodId();
   const selectedFabricId = useSelectedFabricId();
-  const availableFabricsIds = useAvailableFabricIds();
+  const availableFabricIds = useAvailableFabricIds();
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+      <h2 className="text-[11px] font-medium uppercase tracking-widest text-neutral-400">
         {label}
       </h2>
-      <div className="flex gap-4">
+
+      <div className="flex gap-4 items-start">
         {Object.values(values).map((value) => {
+          const isDisabled =
+            type === "fabric" &&
+            !availableFabricIds.includes(value.id as FabricKey);
+
+          const isSelected =
+            type === "wood"
+              ? value.id === selectedWoodId
+              : value.id === selectedFabricId;
+
           return (
-            <div key={value.id}>
-              <Swatch
-                label={value.label}
-                onClick={() => handleClick(value.id)}
-                selected={
-                  value.id === selectedWoodId || value.id === selectedFabricId
-                }
-                map={value.map}
-                hex={value.hex}
-                disabled={
-                  type === "fabric"
-                    ? !availableFabricsIds.includes(value.id as FabricKey)
-                    : false
-                }
-                priceDelta={value.price}
-              />
-              {note ? <p className="text-xs text-neutral-400">{note}</p> : null}
-            </div>
+            <Swatch
+              key={value.id}
+              label={value.label}
+              onClick={() => handleClick(value.id)}
+              selected={isSelected}
+              disabled={isDisabled}
+              disabledReason={isDisabled ? note : undefined}
+              map={value.map}
+              hex={value.hex}
+              priceDelta={value.price}
+              tint={value.tintSwatch === true}
+            />
           );
         })}
       </div>
+
+      {/* Fabric available note */}
+      {note ? <p className="text-xs text-neutral-400">{note}</p> : null}
     </div>
   );
 }
