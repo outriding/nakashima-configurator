@@ -29,15 +29,7 @@ export function Swatch({
   tint,
   onClick,
 }: SwatchProps) {
-  // Zooming the texture shows grain rather than a whole tile squeezed into 48px.
-  // const chipStyle = map
-  //   ? {
-  //       backgroundImage: `url(${map})`,
-  //       backgroundSize: "800%",
-  //       backgroundPosition: "center",
-  //     }
-  //   : { backgroundColor: hex };
-
+  // Swatch zoom and tint multiply
   const chipStyle = map
     ? {
         backgroundImage: `url(${map})`,

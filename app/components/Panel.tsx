@@ -69,7 +69,7 @@ export function Panel() {
         type="wood"
         label="wood finish"
         values={chairConfig.woods}
-        handleClick={(id: WoodKey) => handleWood(id)}
+        handleClick={(id) => handleWood(id as WoodKey)}
       />
 
       {/* Fabric */}
@@ -77,7 +77,7 @@ export function Panel() {
         type="fabric"
         label="fabric"
         values={chairConfig.fabrics}
-        handleClick={(id: FabricKey) => handleFabric(id)}
+        handleClick={(id) => handleFabric(id as FabricKey)}
         note={fabricNote}
       />
 

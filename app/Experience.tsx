@@ -174,7 +174,7 @@ function Shadows() {
 
 export default function Experience() {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 32 }}>
+    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 36 }}>
       <color args={["#FAF9F5"]} attach="background" />
       <Suspense fallback={null}>
         <Environment preset="studio" />
@@ -187,3 +187,12 @@ export default function Experience() {
     </Canvas>
   );
 }
+
+useTexture.preload([
+  ...Object.values(woodColorUrls),
+  ...Object.values(woodNormalUrls),
+  ...Object.values(woodRoughUrls),
+  leatherUrls.color,
+  leatherUrls.normal,
+  leatherUrls.rough,
+]);
