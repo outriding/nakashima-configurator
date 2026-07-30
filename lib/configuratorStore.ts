@@ -97,7 +97,7 @@ export const useTotalPrice = () => {
 
 export const useHydrate = () => useStore((s) => s.hydrate);
 
-// Imperitive Read Only
+// Imperative read — non-reactive
 export const getChairState = useStore.getState;
 
 // Restores initial state. Used by tests
