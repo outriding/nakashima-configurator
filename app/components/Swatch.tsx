@@ -36,7 +36,7 @@ export function Swatch({
         ...(tint
           ? { backgroundColor: hex, backgroundBlendMode: "multiply" as const }
           : {}),
-        backgroundSize: "200%",
+        backgroundSize: "100%",
         backgroundPosition: "center",
       }
     : { backgroundColor: hex };
@@ -51,7 +51,7 @@ export function Swatch({
       aria-label={
         disabled
           ? `${label}, unavailable. ${disabledReason ?? ""}`
-          : `${label}${priceDelta ? `, plus $${priceDelta}` : ""}`
+          : `${label}${priceDelta ? `, plus £${priceDelta}` : ""}`
       }
       className="group w-[62px] cursor-pointer text-left aria-disabled:cursor-not-allowed"
     >
@@ -96,7 +96,7 @@ export function Swatch({
 
       {priceDelta ? (
         <span className="mt-px block text-[11px] text-neutral-500">
-          +${priceDelta}
+          +£{priceDelta}
         </span>
       ) : null}
     </button>

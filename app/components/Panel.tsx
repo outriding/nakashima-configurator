@@ -27,17 +27,18 @@ export function Panel() {
   const setUrl = useUrlWriter();
 
   const syncUrl = () => {
+    // Read state back after the action, not from the click: selectWood can
+    // clamp the fabric (e.g. oak → linen when leather was selected), so the URL
+    // must reflect what the store settled on, not what was requested.
     const { selectedWoodId, selectedFabricId } = getChairState();
     setUrl({ wood: selectedWoodId, fabric: selectedFabricId });
   };
 
-  // Update store and URL
   const handleWood = (id: WoodKey) => {
     selectWood(id);
     syncUrl();
   };
 
-  // Update store and URL
   const handleFabric = (id: FabricKey) => {
     selectFabric(id);
     syncUrl();
@@ -55,12 +56,12 @@ export function Panel() {
   }, [copied]);
 
   return (
-    <div className="h-full w-90 px-12 pt-22 flex flex-col gap-10  bg-[#FFFFFF]">
+    <div className="h-full w-90 px-12 pt-16 flex flex-col gap-10  bg-white">
       {/* Product + live price */}
       <div className="flex flex-col">
         <h1 className="text-sm text-neutral-500">Nakashima lounge chair </h1>
         <p className="mt-1 text-4xl font-bold tracking-tight text-neutral-900">
-          ${totalPrice.toLocaleString()}
+          £{totalPrice.toLocaleString("en-GB")}
         </p>
       </div>
 
@@ -82,11 +83,11 @@ export function Panel() {
       />
 
       {/* Copy Button */}
-      <div className="border-t border-neutral-200 pt-6">
+      <div className="border-t border-neutral-200 pt-9">
         <button
           type="button"
           onClick={handleCopy}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-neutral-300 px-4 py-3 text-sm text-neutral-800 transition hover:border-neutral-400 mt-3"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-neutral-300 px-4 py-3 text-sm text-neutral-800 transition hover:border-neutral-400 "
         >
           <LinkIcon className="h-4 w-4" strokeWidth={1.75} />
           {copied ? "Copied" : "Copy link to this design"}
