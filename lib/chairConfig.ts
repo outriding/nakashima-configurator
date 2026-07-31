@@ -88,11 +88,6 @@ export type FabricKey = keyof typeof fabrics;
 export const DEFAULT_WOOD: WoodKey = "walnut";
 export const DEFAULT_FABRIC: FabricKey = "linen";
 
-export const valuesById: Record<string, OptionValue> = {
-  ...woods,
-  ...fabrics,
-};
-
 export const woodFabricRules: Record<WoodKey, FabricKey[]> = {
   walnut: ["linen", "velvet", "leather"],
   oak: ["linen", "velvet"],
@@ -105,7 +100,7 @@ export const woodsAllowingFabric = (fabricId: FabricKey): string[] =>
     .filter((woodId) => woodFabricRules[woodId].includes(fabricId))
     .map((woodId) => woods[woodId].label);
 
-// Format for UI note (panel.tsx)
+// ["Walnut","Ebony"] → "walnut or ebony"
 export function formatList(labels: string[]): string {
   const lower = labels.map((l) => l.toLowerCase());
   if (lower.length <= 1) return lower[0] ?? "";

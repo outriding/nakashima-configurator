@@ -14,6 +14,9 @@ type SwatchProps = {
   disabled?: boolean;
   /** Why this option is unavailable. Surfaced as the chip's tooltip. */
   disabledReason?: string;
+  /** Multiply the texture by `hex`. True for fabrics using the shared neutral
+      weave (linen, velvet); false for options whose texture is already the
+      right colour (woods, leather). */
   tint: boolean;
   onClick: () => void;
 };
@@ -29,14 +32,14 @@ export function Swatch({
   tint,
   onClick,
 }: SwatchProps) {
-  // Swatch zoom and tint multiply
+  // Neutral weave × fabric hex — mirrors how the model tints its baked weave.
   const chipStyle = map
     ? {
         backgroundImage: `url(${map})`,
         ...(tint
           ? { backgroundColor: hex, backgroundBlendMode: "multiply" as const }
           : {}),
-        backgroundSize: "200%",
+        backgroundSize: "100%",
         backgroundPosition: "center",
       }
     : { backgroundColor: hex };
@@ -51,7 +54,7 @@ export function Swatch({
       aria-label={
         disabled
           ? `${label}, unavailable. ${disabledReason ?? ""}`
-          : `${label}${priceDelta ? `, plus $${priceDelta}` : ""}`
+          : `${label}${priceDelta ? `, plus £${priceDelta}` : ""}`
       }
       className="group w-[62px] cursor-pointer text-left aria-disabled:cursor-not-allowed"
     >
@@ -76,7 +79,7 @@ export function Swatch({
 
         {disabled && (
           <span className="absolute inset-0 flex items-center justify-center">
-            <Lock className="h-4 w-4 text-black/100" strokeWidth={2} />
+            <Lock className="h-4 w-4 text-black" strokeWidth={2} />
           </span>
         )}
       </span>
@@ -96,7 +99,7 @@ export function Swatch({
 
       {priceDelta ? (
         <span className="mt-px block text-[11px] text-neutral-500">
-          +${priceDelta}
+          +£{priceDelta}
         </span>
       ) : null}
     </button>

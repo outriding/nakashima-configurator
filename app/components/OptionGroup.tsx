@@ -1,10 +1,12 @@
+"use client";
+
 import {
   useAvailableFabricIds,
   useSelectedFabricId,
   useSelectedWoodId,
 } from "@/lib/configuratorStore";
 import { Swatch } from "./Swatch";
-import { chairConfig, FabricKey, WoodKey } from "@/lib/chairConfig";
+import { chairConfig, type FabricKey, type WoodKey } from "@/lib/chairConfig";
 
 type Woods = typeof chairConfig.woods;
 type Fabric = typeof chairConfig.fabrics;
@@ -27,9 +29,17 @@ export default function OptionGroup({
   const selectedWoodId = useSelectedWoodId();
   const selectedFabricId = useSelectedFabricId();
   const availableFabricIds = useAvailableFabricIds();
+  const headingId = `${type}-heading`;
   return (
-    <div className="flex flex-col gap-3">
-      <h2 className="text-[11px] font-medium uppercase tracking-widest text-neutral-400">
+    <div
+      className="flex flex-col gap-3"
+      role="group"
+      aria-labelledby={headingId}
+    >
+      <h2
+        id={headingId}
+        className="text-[11px] font-medium uppercase tracking-widest text-neutral-400"
+      >
         {label}
       </h2>
 
@@ -61,7 +71,6 @@ export default function OptionGroup({
         })}
       </div>
 
-      {/* Fabric available note */}
       {note ? <p className="text-xs text-neutral-400">{note}</p> : null}
     </div>
   );

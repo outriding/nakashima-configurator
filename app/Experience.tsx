@@ -31,7 +31,7 @@ type ChairGLTF = GLTF & {
   };
 };
 
-// Fetch model locally or on vercel
+// Blob URL in production (env var); local file in dev (fallback)
 const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
 
 // --- TEXTURES ----
@@ -161,10 +161,10 @@ function Chair(props: ThreeElements["group"]) {
 function Shadows() {
   return (
     <ContactShadows
-      position={[0, 0.005, 0]}
+      position={[0, 0.01, 0]}
       opacity={0.65}
-      scale={8}
-      blur={1.6}
+      scale={5}
+      blur={1}
       far={0.6}
       resolution={2048}
       frames={1}
@@ -174,16 +174,29 @@ function Shadows() {
 
 export default function Experience() {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [-1.5, 0.8, 1.5], fov: 36 }}>
+    <Canvas dpr={[1, 2]} camera={{ position: [-1.2, 0.8, 1.5], fov: 40 }}>
       <color args={["#FAF9F5"]} attach="background" />
       <Suspense fallback={null}>
-        <Environment preset="studio" />
+        <Environment
+          files="/hdri/studio_small_03_1k.hdr"
+          environmentIntensity={0.85}
+        />
         <Center>
           <Chair />
           <Shadows />
         </Center>
+        <Shadows />
       </Suspense>
-      <OrbitControls makeDefault />
+
+      <OrbitControls
+        makeDefault
+        enablePan={false}
+        enableDamping
+        minDistance={1.4}
+        maxDistance={3.5}
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI / 2.05}
+      />
     </Canvas>
   );
 }
