@@ -43,3 +43,6 @@ next-env.d.ts
 # models
 *.glb
 app/assets/raw/
+
+# Windows Metadata
+*:Zone.Identifier

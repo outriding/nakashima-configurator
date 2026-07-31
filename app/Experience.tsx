@@ -31,7 +31,7 @@ type ChairGLTF = GLTF & {
   };
 };
 
-// Fetch model locally or on vercel
+// Blob URL in production (env var); local file in dev (fallback)
 const MODEL_URL = process.env.NEXT_PUBLIC_MODEL_URL ?? "/chair_optimized.glb";
 
 // --- TEXTURES ----

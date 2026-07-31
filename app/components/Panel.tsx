@@ -56,7 +56,7 @@ export function Panel() {
   }, [copied]);
 
   return (
-    <div className="h-full w-90 px-12 pt-16 flex flex-col gap-10  bg-white">
+    <div className="h-full w-90 px-12 pt-16 flex flex-col gap-10  bg-white overflow-y-auto">
       {/* Product + live price */}
       <div className="flex flex-col">
         <h1 className="text-sm text-neutral-500">Nakashima lounge chair </h1>
