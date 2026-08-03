@@ -56,12 +56,12 @@ export function Swatch({
           ? `${label}, unavailable. ${disabledReason ?? ""}`
           : `${label}${priceDelta ? `, plus £${priceDelta}` : ""}`
       }
-      className="group w-[62px] cursor-pointer text-left aria-disabled:cursor-not-allowed"
+      className="group flex w-[62px] md:w-24 lg:w-[62px] flex-col items-center cursor-pointer aria-disabled:cursor-not-allowed"
     >
       <span
         style={chipStyle}
         className={[
-          "relative block h-12 w-12 rounded-md  transition",
+          "relative block h-12 w-12 md:h-18 md:w-18 lg:h-12 lg:w-12 rounded-md  transition",
           "focus-visible:outline-none",
           selected
             ? "ring-[1.5px] ring-neutral-900 ring-offset-1 ring-offset-[#FAF9F5]"
