@@ -32,7 +32,7 @@ export default function OptionGroup({
   const headingId = `${type}-heading`;
   return (
     <div
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-3 "
       role="group"
       aria-labelledby={headingId}
     >
@@ -43,7 +43,7 @@ export default function OptionGroup({
         {label}
       </h2>
 
-      <div className="flex gap-4 items-start">
+      <div className="flex lg:gap-4 lg:items-start justify-between">
         {Object.values(values).map((value) => {
           const isDisabled =
             type === "fabric" &&

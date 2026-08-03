@@ -6,7 +6,7 @@ import { CanvasArea } from "./components/CanvasArea";
 
 export default function Home() {
   return (
-    <main className="flex h-screen w-screen">
+    <main className="flex flex-col h-screen w-screen lg:flex-row">
       <CanvasArea />
       <Suspense fallback={null}>
         <Panel />
