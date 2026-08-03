@@ -62,7 +62,8 @@ export function Panel() {
     // Outer: scroll container.
     <div
       className="w-full flex-1 lg:flex-none lg:w-90 overflow-y-auto
-                 px-10 lg:px-12 pt-6 lg:pt-[5.5rem] pb-8 bg-white"
+             px-10 lg:px-12 pt-6 lg:pt-[5.5rem]
+             pb-[calc(2rem+env(safe-area-inset-bottom))] lg:pb-8 bg-white"
     >
       <div className="w-full max-w-md mx-auto lg:max-w-none lg:mx-0 flex flex-col gap-4 md:gap-6 lg:gap-10">
         {/* Product + live price */}
