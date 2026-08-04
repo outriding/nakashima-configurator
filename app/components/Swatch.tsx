@@ -33,7 +33,6 @@ export function Swatch({
   onClick,
 }: SwatchProps) {
   // Neutral weave × fabric hex — mirrors how the model tints its baked weave.
-  console.log(typeof hex, JSON.stringify(hex));
   const chipStyle = map
     ? {
         backgroundImage: `url(${map})`,

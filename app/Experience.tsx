@@ -12,7 +12,7 @@ import {
 } from "@react-three/drei";
 import { KTX2Loader } from "three-stdlib";
 import { type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSelectedWood, useSelectedFabric } from "@/lib/configuratorStore";
 import { woods, fabrics } from "@/lib/chairConfig";
 
@@ -87,6 +87,14 @@ const configureFabricColor = (t: THREE.Texture) => {
 };
 
 const configureFabricData = (t: THREE.Texture) => tileFabric(t);
+
+// Mounts only once the suspended siblings in this boundary have resolved,
+function LoadSignal({ onReady }: { onReady: () => void }) {
+  useEffect(() => {
+    onReady();
+  }, [onReady]);
+  return null;
+}
 
 function Chair(props: ThreeElements["group"]) {
   const { gl } = useThree();
@@ -172,7 +180,7 @@ function Shadows() {
   );
 }
 
-export default function Experience() {
+export default function Experience({ onReady }: { onReady?: () => void }) {
   return (
     <Canvas dpr={[1, 2]} camera={{ position: [-1.2, 0.8, 1.5], fov: 40 }}>
       <color args={["#FAF9F5"]} attach="background" />
@@ -186,6 +194,7 @@ export default function Experience() {
           <Shadows />
         </Center>
         <Shadows />
+        {onReady && <LoadSignal onReady={onReady} />}
       </Suspense>
 
       <OrbitControls

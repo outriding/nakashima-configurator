@@ -1,7 +1,7 @@
 // app/components/CanvasArea.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import Experience from "../Experience";
 import { CanvasLoader } from "./CanvasLoader";
 import { ErrorBoundary } from "react-error-boundary";
@@ -11,11 +11,7 @@ export function CanvasArea() {
   const [interacted, setInteracted] = useState(false);
   const [ready, setReady] = useState(false);
 
-  // Don't show the hint until the scene has had time to appear.
-  useEffect(() => {
-    const t = setTimeout(() => setReady(true), 1000);
-    return () => clearTimeout(t);
-  }, []);
+  const handleReady = useCallback(() => setReady(true), []);
 
   const showHint = ready && !interacted;
 
@@ -26,7 +22,7 @@ export function CanvasArea() {
       onWheel={() => setInteracted(true)}
     >
       <ErrorBoundary FallbackComponent={CanvasFallback}>
-        <Experience />
+        <Experience onReady={handleReady} />
         <CanvasLoader />
         <p
           className={[
