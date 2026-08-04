@@ -19,7 +19,12 @@ export function CanvasArea() {
       <ErrorBoundary FallbackComponent={CanvasFallback}>
         <Experience />
         <CanvasLoader />
-        <p className="pointer-events-none absolute bottom-2 lg:bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs lg:text-sm text-neutral-400">
+        <p
+          className={[
+            "pointer-events-none absolute bottom-2 lg:bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs lg:text-sm text-neutral-400",
+            interacted ? "opacity-0" : "opacity-100",
+          ].join(" ")}
+        >
           <span className="lg:hidden">Drag · pinch to zoom</span>
           <span className="hidden lg:inline">
             Drag to rotate · scroll to zoom
